@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:netflix_clone/Screen/hot_news.dart';
+import 'package:netflix_clone/Screen/my_netflix.dart';
 import 'package:netflix_clone/Screen/netflix_home_screen.dart';
 import 'package:netflix_clone/Screen/search_screen.dart';
 
@@ -19,7 +20,18 @@ class AppNavbarScreen extends StatelessWidget {
             tabs: [
               Tab(icon: Icon(Iconsax.home5), text: "Home"),
               Tab(icon: Icon(Iconsax.search_normal), text: "Search"),
-              Tab(icon: Icon(Icons.photo_library_outlined), text: "Hot News"),
+              Tab(
+                icon: ClipRRect(
+                  //borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    'assets/user-icon.jpg',
+                    width: 24,
+                    height: 24,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                text: "My Netflix",
+              ),
             ],
             unselectedLabelColor: Colors.grey,
             labelColor: Colors.white,
@@ -27,7 +39,7 @@ class AppNavbarScreen extends StatelessWidget {
           ),
         ),
         body: TabBarView(
-          children: [NetflixHomeScreen(), SearchScreen(), HotNews()],
+          children: [NetflixHomeScreen(), SearchScreen(), MyNetflix()],
         ),
       ),
     );
