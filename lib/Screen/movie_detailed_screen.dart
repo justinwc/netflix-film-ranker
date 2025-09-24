@@ -4,6 +4,7 @@ import 'package:netflix_clone/Common/utils.dart';
 import 'package:netflix_clone/Model/movie_details.dart';
 import 'package:netflix_clone/Model/movie_recommendation.dart';
 import 'package:netflix_clone/Services/api_services.dart';
+import 'package:netflix_clone/Screen/rating_page.dart';
 
 class MovieDetailedScreen extends StatefulWidget {
   final String posterPath;
@@ -270,14 +271,26 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
                     ),
                   ],
                 ),
-                Column(
-                  children: [
-                    Icon(Icons.thumb_up, size: 40, color: Colors.white),
-                    Text(
-                      "Rate",
-                      style: TextStyle(color: Colors.white, height: 0.5),
-                    ),
-                  ],
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RatingPage(
+                          movieTitle: widget.title,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Icon(Icons.thumb_up, size: 40, color: Colors.white),
+                      Text(
+                        "Rate",
+                        style: TextStyle(color: Colors.white, height: 0.5),
+                      ),
+                    ],
+                  ),
                 ),
                 Column(
                   children: [
