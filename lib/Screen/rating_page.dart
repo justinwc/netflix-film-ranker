@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Providers/user_rating_state.dart';
-import '../Model/simple_movie.dart';
 
 class RatingPage extends StatefulWidget {
-  final SimpleMovie movie;
+  final RatedMovie movie;
   
   const RatingPage({
     super.key,

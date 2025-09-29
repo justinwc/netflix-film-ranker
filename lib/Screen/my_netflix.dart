@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../Providers/user_rating_state.dart';
-import '../Model/simple_movie.dart';
 
 class MyNetflix extends StatefulWidget {
   const MyNetflix({super.key});
@@ -75,30 +74,7 @@ class _MyNetflixState extends State<MyNetflix> {
               Expanded(
                 child: ratingState.totalRatedMovies == 0
                     ? _buildEmptyState()
-                    : SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Good Movies Section
-                            if (ratingState.goodMovies.isNotEmpty) ...[
-                              _buildMovieSection('Good Movies', ratingState.goodMovies, Colors.green),
-                              const SizedBox(height: 20),
-                            ],
-                            
-                            // Okay Movies Section
-                            if (ratingState.okayMovies.isNotEmpty) ...[
-                              _buildMovieSection('Okay Movies', ratingState.okayMovies, Colors.orange),
-                              const SizedBox(height: 20),
-                            ],
-                            
-                            // Bad Movies Section
-                            if (ratingState.badMovies.isNotEmpty) ...[
-                              _buildMovieSection('Bad Movies', ratingState.badMovies, Colors.red),
-                              const SizedBox(height: 20),
-                            ],
-                          ],
-                        ),
-                      ),
+                    : _buildUnifiedRankingList(ratingState),
               ),
             ],
           );
@@ -142,65 +118,103 @@ class _MyNetflixState extends State<MyNetflix> {
     );
   }
 
-  Widget _buildMovieSection(String title, List<SimpleMovie> movies, Color accentColor) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Section header
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              Icon(
-                _getRatingIcon(title),
-                color: accentColor,
-                size: 24,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                title,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+  Widget _buildUnifiedRankingList(UserRatingState ratingState) {
+    // Create a single list with all movies, ordered by category priority
+    List<Map<String, dynamic>> allMovies = [];
+    
+    // Add Good movies first (highest priority)
+    for (var movie in ratingState.goodMovies) {
+      allMovies.add({
+        'movie': movie,
+        'category': 'Good',
+        'color': Colors.green,
+      });
+    }
+    
+    // Add Okay movies second
+    for (var movie in ratingState.okayMovies) {
+      allMovies.add({
+        'movie': movie,
+        'category': 'Okay',
+        'color': Colors.orange,
+      });
+    }
+    
+    // Add Bad movies last (lowest priority)
+    for (var movie in ratingState.badMovies) {
+      allMovies.add({
+        'movie': movie,
+        'category': 'Bad',
+        'color': Colors.red,
+      });
+    }
+
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.emoji_events,
+                  color: Colors.amber,
+                  size: 24,
                 ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: accentColor,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '${movies.length}',
-                  style: const TextStyle(
+                const SizedBox(width: 8),
+                Text(
+                  'My Movie Rankings',
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 12,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.amber,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '${allMovies.length}',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 12),
-        
-        // Movie list
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: movies.length,
-          itemBuilder: (context, index) {
-            final movie = movies[index];
-            return _buildMovieCard(movie, accentColor);
-          },
-        ),
-      ],
+          const SizedBox(height: 12),
+          
+          // Unified movie list
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: allMovies.length,
+            itemBuilder: (context, index) {
+              final movieData = allMovies[index];
+              final movie = movieData['movie'] as RatedMovie;
+              final category = movieData['category'] as String;
+              final color = movieData['color'] as Color;
+              final rank = index + 1; // Global ranking starts from 1
+              
+              return _buildMovieCard(movie, color, rank, category);
+            },
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildMovieCard(SimpleMovie movie, Color accentColor) {
+
+  Widget _buildMovieCard(RatedMovie movie, Color accentColor, int rank, String category) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       padding: const EdgeInsets.all(12),
@@ -211,6 +225,27 @@ class _MyNetflixState extends State<MyNetflix> {
       ),
       child: Row(
         children: [
+          // Ranking number
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: accentColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Center(
+              child: Text(
+                '$rank',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          
           // Movie poster
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
@@ -293,7 +328,7 @@ class _MyNetflixState extends State<MyNetflix> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        _getRatingLabel(accentColor),
+                        category,
                         style: TextStyle(
                           color: accentColor,
                           fontSize: 12,
@@ -309,26 +344,5 @@ class _MyNetflixState extends State<MyNetflix> {
         ],
       ),
     );
-  }
-
-
-  IconData _getRatingIcon(String title) {
-    switch (title) {
-      case 'Good Movies':
-        return Icons.thumb_up;
-      case 'Okay Movies':
-        return Icons.thumbs_up_down;
-      case 'Bad Movies':
-        return Icons.thumb_down;
-      default:
-        return Icons.star;
-    }
-  }
-
-  String _getRatingLabel(Color accentColor) {
-    if (accentColor == Colors.green) return 'Good';
-    if (accentColor == Colors.orange) return 'Okay';
-    if (accentColor == Colors.red) return 'Bad';
-    return 'Unknown';
   }
 }

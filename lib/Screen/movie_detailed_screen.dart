@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:netflix_clone/Common/utils.dart';
 import 'package:netflix_clone/Model/movie_details.dart';
 import 'package:netflix_clone/Model/movie_recommendation.dart';
-import 'package:netflix_clone/Model/simple_movie.dart';
+import 'package:netflix_clone/Providers/user_rating_state.dart';
 import 'package:netflix_clone/Services/api_services.dart';
 import 'package:netflix_clone/Screen/rating_page.dart';
 
@@ -278,7 +278,7 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => RatingPage(
-                          movie: SimpleMovie(
+                          movie: RatedMovie(
                             id: widget.movieId,
                             title: widget.title,
                             posterPath: widget.posterPath,
