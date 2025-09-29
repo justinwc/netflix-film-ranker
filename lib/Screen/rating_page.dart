@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../Providers/user_rating_state.dart';
+import '../Model/simple_movie.dart';
 
 class RatingPage extends StatefulWidget {
-  final String movieTitle;
+  final SimpleMovie movie;
   
   const RatingPage({
     super.key,
-    required this.movieTitle,
+    required this.movie,
   });
 
   @override
@@ -57,7 +60,7 @@ class _RatingPageState extends State<RatingPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Rate ${widget.movieTitle}",
+                    "Rate ${widget.movie.title}",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 28,
@@ -127,10 +130,16 @@ class _RatingPageState extends State<RatingPage> {
                         padding: EdgeInsets.symmetric(horizontal: 50, vertical: 18),
                       ),
                       onPressed: () {
-                        // Handle rating submission
+                        // Get the rating state provider
+                        final ratingState = Provider.of<UserRatingState>(context, listen: false);
+                        
+                        // Add the rating to the appropriate list
+                        ratingState.addRating(widget.movie, selectedRating!);
+                        
+                        // Show confirmation
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text("Rating submitted: ${selectedRating}"),
+                            content: Text("Rating saved: ${selectedRating}"),
                             backgroundColor: Colors.red,
                           ),
                         );

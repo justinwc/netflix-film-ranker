@@ -48,6 +48,7 @@ class _NetflixHomeScreenState extends State<NetflixHomeScreen> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: Row(
+                // Header
                 children: [
                   Image.asset("assets/logo.png", height: 50),
                   Spacer(),
@@ -66,6 +67,7 @@ class _NetflixHomeScreenState extends State<NetflixHomeScreen> {
                 ],
               ),
             ),
+            //TV Shows, Movies, and Categories
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: Row(
@@ -136,6 +138,7 @@ class _NetflixHomeScreenState extends State<NetflixHomeScreen> {
               ),
             ),
             SizedBox(height: 10),
+            //Main Movie Poster
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Stack(
@@ -277,6 +280,7 @@ class _NetflixHomeScreenState extends State<NetflixHomeScreen> {
                 ],
               ),
             ),
+            //Movie Categories
             SizedBox(height: 30),
             moviesTypes(
               future: trendingMovies,
@@ -289,7 +293,7 @@ class _NetflixHomeScreenState extends State<NetflixHomeScreen> {
             ),
             moviesTypes(
               future: popularTVseries,
-              movieType: "Popular TV Series - Most-Watch For You",
+              movieType: "Popular TV Series",
             ),
             moviesTypes(future: topRatedMovies, movieType: "Top Rated Movies"),
           ],

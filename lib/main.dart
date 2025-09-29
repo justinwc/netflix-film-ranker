@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:netflix_clone/Screen/splash_screen.dart';
+import 'package:netflix_clone/Providers/user_rating_state.dart';
 
 
 void main() {
@@ -12,10 +14,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SplashScreen(),
-      debugShowCheckedModeBanner: false,
-      title: "Netflix Clone",
+    return ChangeNotifierProvider(
+      create: (context) => UserRatingState(),
+      child: MaterialApp(
+        home: SplashScreen(),
+        debugShowCheckedModeBanner: false,
+        title: "Netflix Clone",
+      ),
     );
   }
 }

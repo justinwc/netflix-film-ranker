@@ -97,8 +97,8 @@ class ApiServices {
     }
   }
    // Movie detail
-   // i have not used detail api due to some issiue on this api
-Future<MovieDetail?> movieDetail(int movieId) async {
+   // i have not used detail api due to some issues on this api
+  Future<MovieDetail?> movieDetail(int movieId) async {
     try {
       final endPoint = "movie/$movieId";
       final apiUrl = "$baseUrl$endPoint$key";

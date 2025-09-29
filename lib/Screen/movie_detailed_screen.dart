@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:netflix_clone/Common/utils.dart';
 import 'package:netflix_clone/Model/movie_details.dart';
 import 'package:netflix_clone/Model/movie_recommendation.dart';
+import 'package:netflix_clone/Model/simple_movie.dart';
 import 'package:netflix_clone/Services/api_services.dart';
 import 'package:netflix_clone/Screen/rating_page.dart';
 
@@ -29,7 +30,7 @@ class MovieDetailedScreen extends StatefulWidget {
 
 class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
   final ApiServices apiServices = ApiServices();
-  late Future<MovieDetail?> moviwDetail;
+  late Future<MovieDetail?> movieDetail;
   late Future<MovieRecommedations?> movieRecommendation;
   @override
   void initState() {
@@ -38,7 +39,7 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
   }
 
   fetchMovieData() async {
-    moviwDetail = apiServices.movieDetail(widget.movieId);
+    movieDetail = apiServices.movieDetail(widget.movieId);
     // await Future.delayed(Duration(seconds: 1)); // Add delay
     movieRecommendation = apiServices.movieRecommendation(widget.movieId);
     setState(() {});
@@ -59,7 +60,7 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
       body: SingleChildScrollView(
         child:
         // FutureBuilder(
-        //   future: moviwDetail,
+        //   future: movieDetail,
         //   builder: (context, snapshot) {
         //     if (snapshot.hasData) {
         //       final movie = snapshot.data!;
@@ -277,7 +278,13 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => RatingPage(
-                          movieTitle: widget.title,
+                          movie: SimpleMovie(
+                            id: widget.movieId,
+                            title: widget.title,
+                            posterPath: widget.posterPath,
+                            releaseDate: widget.releaseDate,
+                            overview: widget.overview,
+                          ),
                         ),
                       ),
                     );
@@ -356,11 +363,4 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
     );
   }
 
-  // return SizedBox();
-  // },
-  // ),
-  //   ),
-  // );
 }
-
-// }
