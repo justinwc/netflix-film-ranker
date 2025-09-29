@@ -49,7 +49,7 @@ class UserRatingState extends ChangeNotifier {
   // Add a movie to the appropriate rating list
   void addRating(RatedMovie movie, String rating) {
     // First, remove the movie from any existing list (in case user re-rates)
-    _removeFromAllLists(movie.id);
+    removeFromAllLists(movie.id);
 
     // Add to the appropriate list based on rating
     switch (rating.toLowerCase()) {
@@ -70,11 +70,32 @@ class UserRatingState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Remove a movie from all lists
-  void _removeFromAllLists(int movieId) {
+  // Remove a movie from all lists (public for Beli ranking service)
+  void removeFromAllLists(int movieId) {
     _goodMovies.removeWhere((movie) => movie.id == movieId);
     _okayMovies.removeWhere((movie) => movie.id == movieId);
     _badMovies.removeWhere((movie) => movie.id == movieId);
+  }
+
+  // Insert a movie at a specific position in the good movies list
+  void insertGoodMovieAtPosition(RatedMovie movie, int position) {
+    removeFromAllLists(movie.id); // Remove from all lists first
+    _goodMovies.insert(position, movie);
+    notifyListeners();
+  }
+
+  // Insert a movie at a specific position in the okay movies list
+  void insertOkayMovieAtPosition(RatedMovie movie, int position) {
+    removeFromAllLists(movie.id); // Remove from all lists first
+    _okayMovies.insert(position, movie);
+    notifyListeners();
+  }
+
+  // Insert a movie at a specific position in the bad movies list
+  void insertBadMovieAtPosition(RatedMovie movie, int position) {
+    removeFromAllLists(movie.id); // Remove from all lists first
+    _badMovies.insert(position, movie);
+    notifyListeners();
   }
 
   // Check if a movie is already rated and return its rating

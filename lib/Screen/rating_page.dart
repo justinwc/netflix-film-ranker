@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Providers/user_rating_state.dart';
+import '../Services/beli_ranking_service.dart';
 
 class RatingPage extends StatefulWidget {
   final RatedMovie movie;
@@ -128,20 +129,65 @@ class _RatingPageState extends State<RatingPage> {
                         ),
                         padding: EdgeInsets.symmetric(horizontal: 50, vertical: 18),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         // Get the rating state provider
                         final ratingState = Provider.of<UserRatingState>(context, listen: false);
                         
-                        // Add the rating to the appropriate list
-                        ratingState.addRating(widget.movie, selectedRating!);
+                        // Use Beli ranking system for all rating categories
+                        try {
+                          List<RatedMovie> existingMovies;
+                          Color successColor;
+                          
+                          switch (selectedRating!.toLowerCase()) {
+                            case 'good':
+                              existingMovies = ratingState.goodMovies;
+                              successColor = Colors.green;
+                              break;
+                            case 'okay':
+                              existingMovies = ratingState.okayMovies;
+                              successColor = Colors.orange;
+                              break;
+                            case 'bad':
+                              existingMovies = ratingState.badMovies;
+                              successColor = Colors.red;
+                              break;
+                            default:
+                              existingMovies = [];
+                              successColor = Colors.red;
+                          }
+                          
+                          final position = await BeliRankingService.findMoviePosition(
+                            context: context,
+                            newMovie: widget.movie,
+                            existingMovies: existingMovies,
+                            category: selectedRating!,
+                          );
+                          
+                          BeliRankingService.insertMovieAtPosition(
+                            ratingState: ratingState,
+                            movie: widget.movie,
+                            position: position,
+                            category: selectedRating!,
+                          );
+                          
+                          // Show confirmation
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Movie ranked at position ${position + 1} in ${selectedRating} movies!"),
+                              backgroundColor: successColor,
+                            ),
+                          );
+                        } catch (e) {
+                          // Fallback to regular rating if Beli system fails
+                          ratingState.addRating(widget.movie, selectedRating!);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Rating saved: ${selectedRating}"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
                         
-                        // Show confirmation
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Rating saved: ${selectedRating}"),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
                         Navigator.of(context).pop();
                       },
                       child: Text(
