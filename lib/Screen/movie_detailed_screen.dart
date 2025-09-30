@@ -40,7 +40,6 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
 
   fetchMovieData() async {
     movieDetail = apiServices.movieDetail(widget.movieId);
-    // await Future.delayed(Duration(seconds: 1)); // Add delay
     movieRecommendation = apiServices.movieRecommendation(widget.movieId);
     setState(() {});
   }
@@ -310,53 +309,53 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            FutureBuilder(
-              future: movieRecommendation,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final movie = snapshot.data;
-                  return movie!.results.isEmpty
-                      ? SizedBox()
-                      : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "More Like This",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          SizedBox(
-                            height: 200,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              shrinkWrap: true,
-                              padding: EdgeInsets.zero,
-                              itemCount: movie.results.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 5),
-                                  child: CachedNetworkImage(
-                                    imageUrl:
-                                        "$imageUrl${movie.results[index].posterPath}",
-                                    height: 200,
-                                    width: 150,
-                                    fit: BoxFit.cover,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      );
-                }
-                return Text("Something Went Wrong");
-              },
-            ),
+            // SizedBox(height: 20),
+            // FutureBuilder(
+            //   future: movieRecommendation,
+            //   builder: (context, snapshot) {
+            //     if (snapshot.hasData) {
+            //       final movie = snapshot.data;
+            //       return movie!.results.isEmpty
+            //           ? SizedBox()
+            //           : Column(
+            //             crossAxisAlignment: CrossAxisAlignment.start,
+            //             children: [
+            //               Text(
+            //                 "More Like This",
+            //                 style: TextStyle(
+            //                   color: Colors.white,
+            //                   fontWeight: FontWeight.bold,
+            //                   fontSize: 18,
+            //                 ),
+            //               ),
+            //               SizedBox(height: 20),
+            //               SizedBox(
+            //                 height: 200,
+            //                 child: ListView.builder(
+            //                   scrollDirection: Axis.horizontal,
+            //                   shrinkWrap: true,
+            //                   padding: EdgeInsets.zero,
+            //                   itemCount: movie.results.length,
+            //                   itemBuilder: (context, index) {
+            //                     return Padding(
+            //                       padding: const EdgeInsets.only(right: 5),
+            //                       child: CachedNetworkImage(
+            //                         imageUrl:
+            //                             "$imageUrl${movie.results[index].posterPath}",
+            //                         height: 200,
+            //                         width: 150,
+            //                         fit: BoxFit.cover,
+            //                       ),
+            //                     );
+            //                   },
+            //                 ),
+            //               ),
+            //             ],
+            //           );
+            //     }
+            //     return Text("Something Went Wrong");
+            //   },
+            // ),
           ],
         ),
       ),

@@ -156,39 +156,13 @@ class _MyNetflixState extends State<MyNetflix> {
           // Header
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.emoji_events,
-                  color: Colors.amber,
-                  size: 24,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'My Movie Rankings',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    '${allMovies.length}',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+            child: Text(
+              'My Movie Rankings',
+                style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -205,7 +179,7 @@ class _MyNetflixState extends State<MyNetflix> {
               final color = movieData['color'] as Color;
               final rank = index + 1; // Global ranking starts from 1
               
-              return _buildMovieCard(movie, color, rank, category);
+              return _buildMovieCard(movie, rank, category);
             },
           ),
         ],
@@ -214,25 +188,19 @@ class _MyNetflixState extends State<MyNetflix> {
   }
 
 
-  Widget _buildMovieCard(RatedMovie movie, Color accentColor, int rank, String category) {
+  Widget _buildMovieCard(RatedMovie movie, int rank, String category) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.grey[900],
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: accentColor.withOpacity(0.3)),
       ),
       child: Row(
         children: [
           // Ranking number
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: accentColor,
-              borderRadius: BorderRadius.circular(20),
-            ),
+          SizedBox(
+            width: 20,
             child: Center(
               child: Text(
                 '$rank',
@@ -303,41 +271,6 @@ class _MyNetflixState extends State<MyNetflix> {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Row(
-                  children: [
-                    if (movie.voteAverage != null) ...[
-                      Icon(
-                        Icons.star,
-                        color: accentColor,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${movie.voteAverage!.toStringAsFixed(1)}',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                    ],
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: accentColor.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        category,
-                        style: TextStyle(
-                          color: accentColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),

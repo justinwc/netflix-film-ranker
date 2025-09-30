@@ -18,25 +18,11 @@ class MovieComparisonDialog extends StatelessWidget {
     required this.onExistingMoviePreferred,
   });
 
-  Color _getCategoryColor() {
-    switch (category.toLowerCase()) {
-      case 'good':
-        return Colors.green;
-      case 'okay':
-        return Colors.orange;
-      case 'bad':
-        return Colors.red;
-      default:
-        return Colors.blue;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final categoryColor = _getCategoryColor();
     
     return Dialog(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.grey[900],
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
@@ -58,21 +44,6 @@ class MovieComparisonDialog extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: categoryColor,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    'Ranking in $category Movies',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
               ],
             ),
             const SizedBox(height: 24),
@@ -89,7 +60,7 @@ class MovieComparisonDialog extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.grey[900],
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.green.withOpacity(0.3)),
+                        border: Border.all(color: Colors.red.withOpacity(0.5)),
                       ),
                       child: Column(
                         children: [
@@ -148,24 +119,6 @@ class MovieComparisonDialog extends StatelessWidget {
                               fontSize: 12,
                             ),
                           ),
-                          const SizedBox(height: 8),
-                          
-                          // Tap indicator
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: categoryColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Text(
-                              'TAP TO CHOOSE',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -174,15 +127,15 @@ class MovieComparisonDialog extends StatelessWidget {
 
                 // VS divider
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Column(
                     children: [
-                      Container(
-                        width: 2,
-                        height: 60,
-                        color: Colors.white24,
-                      ),
-                      const SizedBox(height: 8),
+                      // Container(
+                      //   width: 2,
+                      //   height: 60,
+                      //   color: Colors.white24,
+                      // ),
+                      //const SizedBox(height: 8),
                       const Text(
                         'VS',
                         style: TextStyle(
@@ -191,12 +144,12 @@ class MovieComparisonDialog extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Container(
-                        width: 2,
-                        height: 60,
-                        color: Colors.white24,
-                      ),
+                      //const SizedBox(height: 8),
+                      // Container(
+                      //   width: 2,
+                      //   height: 60,
+                      //   color: Colors.white24,
+                      // ),
                     ],
                   ),
                 ),
@@ -210,7 +163,7 @@ class MovieComparisonDialog extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.grey[900],
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                        border: Border.all(color: Colors.red.withOpacity(0.5)),
                       ),
                       child: Column(
                         children: [
@@ -267,24 +220,6 @@ class MovieComparisonDialog extends StatelessWidget {
                             style: TextStyle(
                               color: Colors.white60,
                               fontSize: 12,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          
-                          // Tap indicator
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Text(
-                              'TAP TO CHOOSE',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
                             ),
                           ),
                         ],

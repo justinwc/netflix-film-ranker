@@ -125,15 +125,18 @@ class _SearchScreenState extends State<SearchScreen> {
                                               width: 150,
                                             ),
                                             SizedBox(width: 20),
-                                            Flexible(
-                                              child: Text(
-                                                topMovie.title,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
-                                                  color: Colors.white,
+                                            Expanded(
+                                              child: Padding(
+                                                padding: EdgeInsets.only(right: 50), // Space for play icon
+                                                child: Text(
+                                                  topMovie.title,
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                    color: Colors.white,
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -210,15 +213,18 @@ class _SearchScreenState extends State<SearchScreen> {
                                         width: 150,
                                       ),
                                       SizedBox(width: 20),
-                                      Flexible(
-                                        child: Text(
-                                          search.title,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                            color: Colors.white,
+                                      Expanded(
+                                        child: Padding(
+                                          padding: EdgeInsets.only(right: 50), // Space for play icon
+                                          child: Text(
+                                            search.title,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ),
