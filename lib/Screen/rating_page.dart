@@ -52,7 +52,7 @@ class _RatingPageState extends State<RatingPage> {
             ),
           ),
           
-          // Rating content - takes up the whole screen
+          // Rating content
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -107,7 +107,7 @@ class _RatingPageState extends State<RatingPage> {
                   
                   Text(
                     selectedRating == null 
-                      ? "Select how you feel about this movie"
+                      ? "How do you feel about this movie"
                       : "You rated this as ${selectedRating!.toLowerCase()}",
                     style: TextStyle(
                       color: selectedRating == null ? Colors.white70 : Colors.white,
@@ -125,70 +125,70 @@ class _RatingPageState extends State<RatingPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         padding: EdgeInsets.symmetric(horizontal: 50, vertical: 18),
                       ),
                       onPressed: () async {
                         // Get the rating state provider
                         final ratingState = Provider.of<UserRatingState>(context, listen: false);
+                        final rating = selectedRating!; // Capture before async
                         
                         // Use Beli ranking system for all rating categories
                         try {
                           List<RatedMovie> existingMovies;
-                          Color successColor;
                           
-                          switch (selectedRating!.toLowerCase()) {
+                          switch (rating.toLowerCase()) {
                             case 'good':
                               existingMovies = ratingState.goodMovies;
-                              successColor = Colors.green;
                               break;
                             case 'okay':
                               existingMovies = ratingState.okayMovies;
-                              successColor = Colors.orange;
                               break;
                             case 'bad':
                               existingMovies = ratingState.badMovies;
-                              successColor = Colors.red;
                               break;
                             default:
                               existingMovies = [];
-                              successColor = Colors.red;
                           }
                           
                           final position = await BeliRankingService.findMoviePosition(
                             context: context,
                             newMovie: widget.movie,
                             existingMovies: existingMovies,
-                            category: selectedRating!,
+                            category: rating,
                           );
                           
                           BeliRankingService.insertMovieAtPosition(
                             ratingState: ratingState,
                             movie: widget.movie,
                             position: position,
-                            category: selectedRating!,
+                            category: rating,
                           );
                           
                           // Show confirmation
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("Movie ranked at position ${position + 1} in ${selectedRating} movies!"),
-                              backgroundColor: successColor,
-                            ),
-                          );
+                          // ScaffoldMessenger.of(context).showSnackBar(
+                          //   SnackBar(
+                          //     content: Text("Movie ranked at position ${position + 1} in ${rating} movies!"),
+                          //     backgroundColor: successColor,
+                          //   ),
+                          // );
                         } catch (e) {
                           // Fallback to regular rating if Beli system fails
-                          ratingState.addRating(widget.movie, selectedRating!);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("Rating saved: ${selectedRating}"),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
+                          ratingState.addRating(widget.movie, rating);
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Rating saved: $rating"),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
                         }
                         
-                        Navigator.of(context).pop();
+                        if (mounted) {
+                          Navigator.of(context).pop();
+                        }
                       },
                       child: Text(
                         "Submit Rating",
@@ -220,7 +220,7 @@ class _RatingPageState extends State<RatingPage> {
             color: isSelected ? color : Colors.white54,
             width: isSelected ? 2 : 1,
           ),
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

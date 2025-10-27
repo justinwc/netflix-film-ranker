@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../Providers/user_rating_state.dart';
-import '../Widgets/movie_comparison_dialog.dart';
+import '../Screen/comparison_screen.dart';
 
 class BeliRankingService {
+  
   // Binary search to find the correct position for a new movie in any category
   static Future<int> findMoviePosition({
     required BuildContext context,
@@ -54,24 +55,28 @@ class BeliRankingService {
     return left; // Position where the new movie should be inserted
   }
 
-  // Show the comparison dialog and return the preferred movie
+  // Show the comparison screen and return the preferred movie
   static Future<RatedMovie> _showComparisonDialog({
     required BuildContext context,
     required RatedMovie newMovie,
     required RatedMovie existingMovie,
     required String category,
   }) async {
-    return await showDialog<RatedMovie>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => MovieComparisonDialog(
-        newMovie: newMovie,
-        existingMovie: existingMovie,
-        category: category,
-        onNewMoviePreferred: () => Navigator.of(context).pop(newMovie),
-        onExistingMoviePreferred: () => Navigator.of(context).pop(existingMovie),
+    final result = await Navigator.push<RatedMovie>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ComparisonScreen(
+          newMovie: newMovie,
+          firstMovie: existingMovie,
+          category: category,
+          onComparisonComplete: (preferred) {
+            // This callback is called when a selection is made
+          },
+        ),
       ),
-    ) ?? newMovie; // Default to new movie if dialog is dismissed somehow
+    );
+    
+    return result ?? newMovie; // Default to new movie if dismissed somehow
   }
 
   // Insert movie at specific position in the specified category

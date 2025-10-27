@@ -79,7 +79,6 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
                       fit: BoxFit.cover,
                       // some time it don't display the image due to different reason like,internet issiue, permission etc
                       image: CachedNetworkImageProvider(
-                        // "$imageUrl${movie.posterPath}",
                         "$imageUrl${widget.posterPath}",
                       ),
                     ),
@@ -248,10 +247,6 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
             ),
             SizedBox(height: 15),
 
-            // Text(
-            //   generesText,
-            //   style: TextStyle(color: Colors.grey, fontSize: 17),
-            // ),
             Text(
               widget.overview,
               maxLines: 5,

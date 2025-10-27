@@ -33,30 +33,30 @@ class _MyNetflixState extends State<MyNetflix> {
       body: Consumer<UserRatingState>(
         builder: (context, ratingState, child) {
           return Column(
-            children: [
+        children: [
               const SizedBox(height: 10),
               
               // User profile section
-              Center(
-                child: Column(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        'assets/user-icon.jpg',
-                        width: 80,
-                        height: 80,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const Text(
-                      'Justin',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+          Center(
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    'assets/user-icon.jpg',
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const Text(
+                  'Justin',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                     const SizedBox(height: 5),
                     Text(
                       '${ratingState.totalRatedMovies} movies rated',
@@ -127,7 +127,6 @@ class _MyNetflixState extends State<MyNetflix> {
       allMovies.add({
         'movie': movie,
         'category': 'Good',
-        'color': Colors.green,
       });
     }
     
@@ -136,7 +135,6 @@ class _MyNetflixState extends State<MyNetflix> {
       allMovies.add({
         'movie': movie,
         'category': 'Okay',
-        'color': Colors.orange,
       });
     }
     
@@ -145,7 +143,6 @@ class _MyNetflixState extends State<MyNetflix> {
       allMovies.add({
         'movie': movie,
         'category': 'Bad',
-        'color': Colors.red,
       });
     }
 
@@ -176,7 +173,6 @@ class _MyNetflixState extends State<MyNetflix> {
               final movieData = allMovies[index];
               final movie = movieData['movie'] as RatedMovie;
               final category = movieData['category'] as String;
-              final color = movieData['color'] as Color;
               final rank = index + 1; // Global ranking starts from 1
               
               return _buildMovieCard(movie, rank, category);

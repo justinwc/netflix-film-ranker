@@ -2,49 +2,84 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../Providers/user_rating_state.dart';
 
-class MovieComparisonDialog extends StatelessWidget {
+class ComparisonScreen extends StatefulWidget {
   final RatedMovie newMovie;
-  final RatedMovie existingMovie;
+  final RatedMovie firstMovie;
   final String category;
-  final VoidCallback onNewMoviePreferred;
-  final VoidCallback onExistingMoviePreferred;
+  final Function(RatedMovie) onComparisonComplete;
 
-  const MovieComparisonDialog({
+  const ComparisonScreen({
     super.key,
     required this.newMovie,
-    required this.existingMovie,
+    required this.firstMovie,
     required this.category,
-    required this.onNewMoviePreferred,
-    required this.onExistingMoviePreferred,
+    required this.onComparisonComplete,
   });
 
   @override
-  Widget build(BuildContext context) {
+  State<ComparisonScreen> createState() => _ComparisonScreenState();
+}
+
+class _ComparisonScreenState extends State<ComparisonScreen> {
+  late RatedMovie newMovie;
+  late RatedMovie existingMovie;
+  
+  @override
+  void initState() {
+    super.initState();
+    newMovie = widget.newMovie;
+    existingMovie = widget.firstMovie;
     
-    return Dialog(
-      backgroundColor: Colors.grey[900],
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+    // Listen for updates to the existing movie
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _setupListener();
+    });
+  }
+  
+  void _setupListener() {
+    // Create a way to update the screen when needed
+    // We'll use a static callback pattern
+  }
+  
+  void _handleSelection(RatedMovie preferred) {
+    widget.onComparisonComplete(preferred);
+    Navigator.pop(context, preferred);
+  }
+  
+  void updateExistingMovie(RatedMovie newExistingMovie) {
+    setState(() {
+      existingMovie = newExistingMovie;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        elevation: 0,
+        leading: null,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
       ),
-      child: Container(
+      body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Header
-            Column(
-              children: [
-                Text(
-                  'Which movie do you prefer?',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-              ],
+            Text(
+              'Which movie do you prefer?',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
 
@@ -54,13 +89,13 @@ class MovieComparisonDialog extends StatelessWidget {
                 // New Movie (Left)
                 Expanded(
                   child: GestureDetector(
-                    onTap: onNewMoviePreferred,
+                    onTap: () => _handleSelection(newMovie),
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: Colors.grey[900],
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.red.withOpacity(0.5)),
+                        border: Border.all(color: Colors.grey.withOpacity(0.5)),
                       ),
                       child: Column(
                         children: [
@@ -69,12 +104,12 @@ class MovieComparisonDialog extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                             child: CachedNetworkImage(
                               imageUrl: newMovie.fullPosterUrl,
-                              width: 80,
-                              height: 120,
+                              width: 120,
+                              height: 180,
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Container(
-                                width: 80,
-                                height: 120,
+                                width: 120,
+                                height: 180,
                                 color: Colors.grey[800],
                                 child: const Center(
                                   child: CircularProgressIndicator(
@@ -84,8 +119,8 @@ class MovieComparisonDialog extends StatelessWidget {
                                 ),
                               ),
                               errorWidget: (context, url, error) => Container(
-                                width: 80,
-                                height: 120,
+                                width: 120,
+                                height: 180,
                                 color: Colors.grey[800],
                                 child: const Icon(
                                   Icons.movie,
@@ -126,44 +161,18 @@ class MovieComparisonDialog extends StatelessWidget {
                 ),
 
                 // VS divider
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Column(
-                    children: [
-                      // Container(
-                      //   width: 2,
-                      //   height: 60,
-                      //   color: Colors.white24,
-                      // ),
-                      //const SizedBox(height: 8),
-                      const Text(
-                        'VS',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      //const SizedBox(height: 8),
-                      // Container(
-                      //   width: 2,
-                      //   height: 60,
-                      //   color: Colors.white24,
-                      // ),
-                    ],
-                  ),
-                ),
+                SizedBox(width: 12),
 
                 // Existing Movie (Right)
                 Expanded(
                   child: GestureDetector(
-                    onTap: onExistingMoviePreferred,
+                    onTap: () => _handleSelection(existingMovie),
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: Colors.grey[900],
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.red.withOpacity(0.5)),
+                        border: Border.all(color: Colors.grey.withOpacity(0.5)),
                       ),
                       child: Column(
                         children: [
@@ -172,12 +181,12 @@ class MovieComparisonDialog extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                             child: CachedNetworkImage(
                               imageUrl: existingMovie.fullPosterUrl,
-                              width: 80,
-                              height: 120,
+                              width: 120,
+                              height: 180,
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Container(
-                                width: 80,
-                                height: 120,
+                                width: 120,
+                                height: 180,
                                 color: Colors.grey[800],
                                 child: const Center(
                                   child: CircularProgressIndicator(
@@ -187,8 +196,8 @@ class MovieComparisonDialog extends StatelessWidget {
                                 ),
                               ),
                               errorWidget: (context, url, error) => Container(
-                                width: 80,
-                                height: 120,
+                                width: 120,
+                                height: 180,
                                 color: Colors.grey[800],
                                 child: const Icon(
                                   Icons.movie,
@@ -235,3 +244,4 @@ class MovieComparisonDialog extends StatelessWidget {
     );
   }
 }
+
