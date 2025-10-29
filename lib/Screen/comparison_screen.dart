@@ -55,188 +55,223 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        elevation: 0,
-        leading: null,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF7A0000), // deep red top
+              Colors.black,      // black bottom
+            ],
+            stops: [0.1, 0.6],
           ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
+        ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Which movie do you prefer?',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+            // Close button
+            Padding(
+              padding: const EdgeInsets.only(top: 50, right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
-
-            // Movies comparison
-            Row(
-              children: [
-                // New Movie (Left)
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => _handleSelection(newMovie),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[900],
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.withOpacity(0.5)),
+            
+            // Comparison content
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Which movie do you prefer?',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                      child: Column(
-                        children: [
-                          // Movie poster
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: CachedNetworkImage(
-                              imageUrl: newMovie.fullPosterUrl,
-                              width: 120,
-                              height: 180,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => Container(
-                                width: 120,
-                                height: 180,
-                                color: Colors.grey[800],
-                                child: const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => Container(
-                                width: 120,
-                                height: 180,
-                                color: Colors.grey[800],
-                                child: const Icon(
-                                  Icons.movie,
-                                  color: Colors.white54,
-                                  size: 40,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          
-                          // Movie title
-                          Text(
-                            newMovie.title,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          
-                          // Year
-                          Text(
-                            newMovie.year,
-                            style: TextStyle(
-                              color: Colors.white60,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ),
+                    const SizedBox(height: 24),
 
-                // VS divider
-                SizedBox(width: 12),
-
-                // Existing Movie (Right)
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => _handleSelection(existingMovie),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[900],
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.withOpacity(0.5)),
-                      ),
-                      child: Column(
-                        children: [
-                          // Movie poster
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: CachedNetworkImage(
-                              imageUrl: existingMovie.fullPosterUrl,
-                              width: 120,
-                              height: 180,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => Container(
-                                width: 120,
-                                height: 180,
-                                color: Colors.grey[800],
-                                child: const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
+                    // Movies comparison
+                    Row(
+                      children: [
+                        // New Movie (Left)
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () => _handleSelection(newMovie),
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[900],
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                              ),
+                              child: Column(
+                                children: [
+                                  // Movie poster
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: CachedNetworkImage(
+                                      imageUrl: newMovie.fullPosterUrl,
+                                      width: 120,
+                                      height: 180,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Container(
+                                        width: 120,
+                                        height: 180,
+                                        color: Colors.grey[800],
+                                        child: const Center(
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2,
+                                          ),
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) => Container(
+                                        width: 120,
+                                        height: 180,
+                                        color: Colors.grey[800],
+                                        child: const Icon(
+                                          Icons.movie,
+                                          color: Colors.white54,
+                                          size: 40,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  const SizedBox(height: 12),
+                                  
+                                  // Movie title
+                                  Text(
+                                    newMovie.title,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  
+                                  // Year
+                                  Text(
+                                    newMovie.year,
+                                    style: TextStyle(
+                                      color: Colors.white60,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              errorWidget: (context, url, error) => Container(
-                                width: 120,
-                                height: 180,
-                                color: Colors.grey[800],
-                                child: const Icon(
-                                  Icons.movie,
-                                  color: Colors.white54,
-                                  size: 40,
-                                ),
+                            ),
+                          ),
+                        ),
+
+                        // VS divider
+                        SizedBox(width: 12),
+
+                        // Existing Movie (Right)
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () => _handleSelection(existingMovie),
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[900],
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                              ),
+                              child: Column(
+                                children: [
+                                  // Movie poster
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: CachedNetworkImage(
+                                      imageUrl: existingMovie.fullPosterUrl,
+                                      width: 120,
+                                      height: 180,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Container(
+                                        width: 120,
+                                        height: 180,
+                                        color: Colors.grey[800],
+                                        child: const Center(
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2,
+                                          ),
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) => Container(
+                                        width: 120,
+                                        height: 180,
+                                        color: Colors.grey[800],
+                                        child: const Icon(
+                                          Icons.movie,
+                                          color: Colors.white54,
+                                          size: 40,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  
+                                  // Movie title
+                                  Text(
+                                    existingMovie.title,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  
+                                  // Year
+                                  Text(
+                                    existingMovie.year,
+                                    style: TextStyle(
+                                      color: Colors.white60,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                          const SizedBox(height: 12),
-                          
-                          // Movie title
-                          Text(
-                            existingMovie.title,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          
-                          // Year
-                          Text(
-                            existingMovie.year,
-                            style: TextStyle(
-                              color: Colors.white60,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ],
         ),

@@ -9,6 +9,7 @@ import 'package:netflix_clone/Screen/rating_page.dart';
 
 class MovieDetailedScreen extends StatefulWidget {
   final String posterPath;
+  final String backdropPath;
   final String title;
   final String overview;
   final String releaseDate;
@@ -18,6 +19,7 @@ class MovieDetailedScreen extends StatefulWidget {
     super.key,
     required this.movieId,
     required this.posterPath,
+    required this.backdropPath,
     required this.title,
     required this.overview,
     required this.releaseDate,
@@ -79,7 +81,7 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
                       fit: BoxFit.cover,
                       // some time it don't display the image due to different reason like,internet issiue, permission etc
                       image: CachedNetworkImageProvider(
-                        "$imageUrl${widget.posterPath}",
+                        "$imageUrl${widget.backdropPath}",
                       ),
                     ),
                   ),

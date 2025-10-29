@@ -101,7 +101,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                                       movieId: topMovie.id,
                                                        originalLanguage:
                                                       topMovie.originalLanguage.toString(),
-                                                      posterPath: topMovie.backdropPath,
+                                                      posterPath: topMovie.posterPath,
+                                                      backdropPath: topMovie.backdropPath,
                                                       title: topMovie.title,
                                                       overview: topMovie.overview,
                                                       releaseDate: topMovie.releaseDate.year.toString(),
@@ -189,7 +190,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                             movieId: search.id,
                                              originalLanguage:
                                                 search.originalLanguage,
-                                            posterPath: search.backdropPath.toString(),
+                                            posterPath: search.posterPath.toString(),
+                                            backdropPath: search.backdropPath.toString(),
                                             title: search.title,
                                             overview: search.overview,
                                             releaseDate:

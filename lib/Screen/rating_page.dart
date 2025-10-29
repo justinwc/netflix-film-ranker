@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Providers/user_rating_state.dart';
 import '../Services/beli_ranking_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:netflix_clone/Common/utils.dart';
 
 class RatingPage extends StatefulWidget {
   final RatedMovie movie;
@@ -22,188 +24,201 @@ class _RatingPageState extends State<RatingPage> {
   Widget build(BuildContext context) {
     
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: Column(
-        children: [
-          // Close button
-          Padding(
-            padding: const EdgeInsets.only(top: 50, right: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF7A0000), // deep red top
+              Colors.black,      // black bottom
+            ],
+            stops: [0.1, 0.6],
           ),
-          
-          // Rating content
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+        ),
+        child: Column(
+          children: [
+            // Close button
+            Padding(
+              padding: const EdgeInsets.only(top: 50, right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    "Rate ${widget.movie.title}",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 40),
-                  
-                  // Rating buttons
-                  Column(
-                    children: [
-                      // Good button
-                      _buildRatingButton(
-                        "Good",
-                        Icons.thumb_up,
-                        Colors.green,
-                        selectedRating == "Good",
-                        () => setState(() => selectedRating = "Good"),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      SizedBox(height: 20),
-                      
-                      // Okay button
-                      _buildRatingButton(
-                        "Okay",
-                        Icons.thumbs_up_down,
-                        Colors.orange,
-                        selectedRating == "Okay",
-                        () => setState(() => selectedRating = "Okay"),
-                      ),
-                      SizedBox(height: 20),
-                      
-                      // Bad button
-                      _buildRatingButton(
-                        "Bad",
-                        Icons.thumb_down,
-                        Colors.red,
-                        selectedRating == "Bad",
-                        () => setState(() => selectedRating = "Bad"),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 30),
-                  
-                  Text(
-                    selectedRating == null 
-                      ? "How do you feel about this movie"
-                      : "You rated this as ${selectedRating!.toLowerCase()}",
-                    style: TextStyle(
-                      color: selectedRating == null ? Colors.white70 : Colors.white,
-                      fontSize: 18,
-                      fontWeight: selectedRating == null ? FontWeight.normal : FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  
-                  SizedBox(height: 40),
-                  
-                  // Submit rating button
-                  if (selectedRating != null)
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 18),
-                      ),
-                      onPressed: () async {
-                        // Get the rating state provider
-                        final ratingState = Provider.of<UserRatingState>(context, listen: false);
-                        final rating = selectedRating!; // Capture before async
-                        
-                        // Use Beli ranking system for all rating categories
-                        try {
-                          List<RatedMovie> existingMovies;
-                          
-                          switch (rating.toLowerCase()) {
-                            case 'good':
-                              existingMovies = ratingState.goodMovies;
-                              break;
-                            case 'okay':
-                              existingMovies = ratingState.okayMovies;
-                              break;
-                            case 'bad':
-                              existingMovies = ratingState.badMovies;
-                              break;
-                            default:
-                              existingMovies = [];
-                          }
-                          
-                          final position = await BeliRankingService.findMoviePosition(
-                            context: context,
-                            newMovie: widget.movie,
-                            existingMovies: existingMovies,
-                            category: rating,
-                          );
-                          
-                          BeliRankingService.insertMovieAtPosition(
-                            ratingState: ratingState,
-                            movie: widget.movie,
-                            position: position,
-                            category: rating,
-                          );
-                          
-                          // Show confirmation
-                          // ScaffoldMessenger.of(context).showSnackBar(
-                          //   SnackBar(
-                          //     content: Text("Movie ranked at position ${position + 1} in ${rating} movies!"),
-                          //     backgroundColor: successColor,
-                          //   ),
-                          // );
-                        } catch (e) {
-                          // Fallback to regular rating if Beli system fails
-                          ratingState.addRating(widget.movie, rating);
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text("Rating saved: $rating"),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        }
-                        
-                        if (mounted) {
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      child: Text(
-                        "Submit Rating",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 24,
                       ),
                     ),
+                  ),
                 ],
               ),
             ),
-          ),
-        ],
+            
+            // Rating content
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Rate this film",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 30),
+                    
+                    Container(
+                      height: 280,
+                      width: 188,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                              image: CachedNetworkImageProvider(
+                            "$imageUrl${widget.movie.posterPath}",
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 30),
+                    // Rating buttons
+                    Column(
+                      children: [
+                        // Good button
+                        _buildRatingButton(
+                          "Good",
+                          Icons.thumb_up,
+                          Colors.green,
+                          selectedRating == "Good",
+                          () => setState(() => selectedRating = "Good"),
+                        ),
+                        SizedBox(height: 15),
+                        
+                        // Okay button
+                        _buildRatingButton(
+                          "Okay",
+                          Icons.thumbs_up_down,
+                          Colors.orange,
+                          selectedRating == "Okay",
+                          () => setState(() => selectedRating = "Okay"),
+                        ),
+                        SizedBox(height: 15),
+                        
+                        // Bad button
+                        _buildRatingButton(
+                          "Bad",
+                          Icons.thumb_down,
+                          Colors.red,
+                          selectedRating == "Bad",
+                          () => setState(() => selectedRating = "Bad"),
+                        ),
+                      ],
+                    ),
+                    
+                    SizedBox(height: 40),
+                    
+                    // Submit rating button
+                    if (selectedRating != null)
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 50, vertical: 18),
+                        ),
+                        onPressed: () async {
+                          // Get the rating state provider
+                          final ratingState = Provider.of<UserRatingState>(context, listen: false);
+                          final rating = selectedRating!; // Capture before async
+                          
+                          // Use Beli ranking system for all rating categories
+                          try {
+                            List<RatedMovie> existingMovies;
+                            
+                            switch (rating.toLowerCase()) {
+                              case 'good':
+                                existingMovies = ratingState.goodMovies;
+                                break;
+                              case 'okay':
+                                existingMovies = ratingState.okayMovies;
+                                break;
+                              case 'bad':
+                                existingMovies = ratingState.badMovies;
+                                break;
+                              default:
+                                existingMovies = [];
+                            }
+                            
+                            final position = await BeliRankingService.findMoviePosition(
+                              context: context,
+                              newMovie: widget.movie,
+                              existingMovies: existingMovies,
+                              category: rating,
+                            );
+                            
+                            BeliRankingService.insertMovieAtPosition(
+                              ratingState: ratingState,
+                              movie: widget.movie,
+                              position: position,
+                              category: rating,
+                            );
+                            
+                            // Show confirmation
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   SnackBar(
+                            //     content: Text("Movie ranked at position ${position + 1} in ${rating} movies!"),
+                            //     backgroundColor: successColor,
+                            //   ),
+                            // );
+                          } catch (e) {
+                            // Fallback to regular rating if Beli system fails
+                            ratingState.addRating(widget.movie, rating);
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Rating saved: $rating"),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
+                          
+                          if (mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        child: Text(
+                          "Submit Rating",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

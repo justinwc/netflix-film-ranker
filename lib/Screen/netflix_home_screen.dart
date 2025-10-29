@@ -179,7 +179,8 @@ class _NetflixHomeScreenState extends State<NetflixHomeScreen> {
                                             (context) => MovieDetailedScreen(
                                               movieId: movie.id,
                                               posterPath:
-                                                  movie.backdropPath.toString(),
+                                                  movie.posterPath.toString(),
+                                              backdropPath: movie.backdropPath.toString(),
                                               title: movie.title,
                                               overview: movie.overview,
                                               originalLanguage:
@@ -348,7 +349,8 @@ class _NetflixHomeScreenState extends State<NetflixHomeScreen> {
                                 builder:
                                     (context) => MovieDetailedScreen(
                                       movieId: movie.id,
-                                      posterPath: movie.backdropPath,
+                                      posterPath: movie.posterPath.toString(),
+                                      backdropPath: movie.backdropPath.toString(),
                                       title: movie.title,
                                       // movie.title?.isNotEmpty == true
                                       //     ? movie.title
