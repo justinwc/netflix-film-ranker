@@ -81,7 +81,7 @@ class _RatingPageState extends State<RatingPage> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 25),
                     
                     Container(
                       height: 280,
@@ -106,7 +106,10 @@ class _RatingPageState extends State<RatingPage> {
                           Icons.thumb_up,
                           Colors.green,
                           selectedRating == "Good",
-                          () => setState(() => selectedRating = "Good"),
+                          () {
+                            setState(() => selectedRating = "Good");
+                            _submitRating();
+                          },
                         ),
                         SizedBox(height: 15),
                         
@@ -116,7 +119,10 @@ class _RatingPageState extends State<RatingPage> {
                           Icons.thumbs_up_down,
                           Colors.orange,
                           selectedRating == "Okay",
-                          () => setState(() => selectedRating = "Okay"),
+                          () {
+                            setState(() => selectedRating = "Okay");
+                            _submitRating();
+                          },
                         ),
                         SizedBox(height: 15),
                         
@@ -126,7 +132,10 @@ class _RatingPageState extends State<RatingPage> {
                           Icons.thumb_down,
                           Colors.red,
                           selectedRating == "Bad",
-                          () => setState(() => selectedRating = "Bad"),
+                          () {
+                            setState(() => selectedRating = "Bad");
+                            _submitRating();
+                          },
                         ),
                       ],
                     ),
@@ -134,85 +143,25 @@ class _RatingPageState extends State<RatingPage> {
                     SizedBox(height: 40),
                     
                     // Submit rating button
-                    if (selectedRating != null)
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: EdgeInsets.symmetric(horizontal: 50, vertical: 18),
-                        ),
-                        onPressed: () async {
-                          // Get the rating state provider
-                          final ratingState = Provider.of<UserRatingState>(context, listen: false);
-                          final rating = selectedRating!; // Capture before async
-                          
-                          // Use Beli ranking system for all rating categories
-                          try {
-                            List<RatedMovie> existingMovies;
-                            
-                            switch (rating.toLowerCase()) {
-                              case 'good':
-                                existingMovies = ratingState.goodMovies;
-                                break;
-                              case 'okay':
-                                existingMovies = ratingState.okayMovies;
-                                break;
-                              case 'bad':
-                                existingMovies = ratingState.badMovies;
-                                break;
-                              default:
-                                existingMovies = [];
-                            }
-                            
-                            final position = await BeliRankingService.findMoviePosition(
-                              context: context,
-                              newMovie: widget.movie,
-                              existingMovies: existingMovies,
-                              category: rating,
-                            );
-                            
-                            BeliRankingService.insertMovieAtPosition(
-                              ratingState: ratingState,
-                              movie: widget.movie,
-                              position: position,
-                              category: rating,
-                            );
-                            
-                            // Show confirmation
-                            // ScaffoldMessenger.of(context).showSnackBar(
-                            //   SnackBar(
-                            //     content: Text("Movie ranked at position ${position + 1} in ${rating} movies!"),
-                            //     backgroundColor: successColor,
-                            //   ),
-                            // );
-                          } catch (e) {
-                            // Fallback to regular rating if Beli system fails
-                            ratingState.addRating(widget.movie, rating);
-                            if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text("Rating saved: $rating"),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
-                          }
-                          
-                          if (mounted) {
-                            Navigator.of(context).pop();
-                          }
-                        },
-                        child: Text(
-                          "Submit Rating",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                    // if (selectedRating != null)
+                    //   ElevatedButton(
+                    //     style: ElevatedButton.styleFrom(
+                    //       backgroundColor: Colors.red,
+                    //       shape: RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(20),
+                    //       ),
+                    //       padding: EdgeInsets.symmetric(horizontal: 50, vertical: 18),
+                    //     ),
+                    //     onPressed: _submitRating,
+                    //     child: Text(
+                    //       "Submit Rating",
+                    //       style: TextStyle(
+                    //         color: Colors.white,
+                    //         fontSize: 18,
+                    //         fontWeight: FontWeight.bold,
+                    //       ),
+                    //     ),
+                    //   ),
                   ],
                 ),
               ),
@@ -258,5 +207,60 @@ class _RatingPageState extends State<RatingPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _submitRating() async {
+    // Get the rating state provider
+    final ratingState = Provider.of<UserRatingState>(context, listen: false);
+    final rating = selectedRating!; // Capture before async
+
+    // Use Beli ranking system for all rating categories
+    try {
+      List<RatedMovie> existingMovies;
+
+      switch (rating.toLowerCase()) {
+        case 'good':
+          existingMovies = ratingState.goodMovies;
+          break;
+        case 'okay':
+          existingMovies = ratingState.okayMovies;
+          break;
+        case 'bad':
+          existingMovies = ratingState.badMovies;
+          break;
+        default:
+          existingMovies = [];
+      }
+
+      final position = await BeliRankingService.findMoviePosition(
+        context: context,
+        newMovie: widget.movie,
+        existingMovies: existingMovies,
+        category: rating,
+      );
+
+      BeliRankingService.insertMovieAtPosition(
+        ratingState: ratingState,
+        movie: widget.movie,
+        position: position,
+        category: rating,
+      );
+
+    } catch (e) {
+      // Fallback to regular rating if Beli system fails
+      ratingState.addRating(widget.movie, rating);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Rating saved: $rating"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 }
