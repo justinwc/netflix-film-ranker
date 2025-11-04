@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:netflix_clone/Screen/confirmation_screen.dart';
 import '../Providers/user_rating_state.dart';
 
 class ComparisonScreen extends StatefulWidget {
@@ -29,21 +30,18 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
     super.initState();
     newMovie = widget.newMovie;
     existingMovie = widget.firstMovie;
-    
-    // Listen for updates to the existing movie
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _setupListener();
-    });
   }
-  
-  void _setupListener() {
-    // Create a way to update the screen when needed
-    // We'll use a static callback pattern
-  }
-  
+
   void _handleSelection(RatedMovie preferred) {
     widget.onComparisonComplete(preferred);
-    Navigator.pop(context, preferred);
+    // Navigator.pop(context, preferred);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ConfirmationScreen(movie: preferred),
+      ),
+    );
   }
   
   void updateExistingMovie(RatedMovie newExistingMovie) {

@@ -86,10 +86,15 @@ class _RatingPageState extends State<RatingPage> {
                     Container(
                       height: 280,
                       width: 188,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey.withOpacity(0.5),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(
                             "$imageUrl${widget.movie.posterPath}",
                           ),
                         ),
