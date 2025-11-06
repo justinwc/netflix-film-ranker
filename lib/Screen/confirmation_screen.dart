@@ -22,27 +22,23 @@ class ConfirmationScreen extends StatefulWidget {
 }
 
 class _ConfirmationScreenState extends State<ConfirmationScreen> {
-  int _calculateUnifiedRank(UserRatingState ratingState) {
-    int baseRank = 0;
-    
-    // Calculate base rank based on category
-    switch (widget.rating.toLowerCase()) {
-      case 'good':
-        // Good movies start at rank 1
-        baseRank = 0;
-        break;
-      case 'okay':
-        // Okay movies come after all Good movies
-        baseRank = ratingState.goodMovies.length;
-        break;
-      case 'bad':
-        // Bad movies come after all Good and Okay movies
-        baseRank = ratingState.goodMovies.length + ratingState.okayMovies.length;
-        break;
-    }
-    
-    // Add the position within the category (1-indexed)
-    return baseRank + widget.position + 1;
+  late final int _unifiedRank;
+  late final double _numericalRating;
+
+  @override
+  void initState() {
+    super.initState();
+    // Calculate values once before the movie is added to avoid recalculation
+    final ratingState = Provider.of<UserRatingState>(context, listen: false);
+    _unifiedRank = ratingState.calculateUnifiedRank(
+      widget.rating,
+      widget.position,
+    );
+    _numericalRating = ratingState.calculateNumericalRating(
+      widget.rating,
+      widget.position,
+      false,
+    );
   }
 
   @override
@@ -89,67 +85,120 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
               ),
             ),
 
-            SizedBox(height: 30),
+            const SizedBox(height: 40),
 
+            // Movie poster with shadow effect
             Container(
-              height: 280,
-              width: 188,
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey.withOpacity(0.5),
-                  width: 2,
-                ),
-                borderRadius: BorderRadius.circular(12),
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: CachedNetworkImageProvider(
-                    "$imageUrl${widget.movie.posterPath}",
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    blurRadius: 20,
+                    spreadRadius: 5,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Container(
+                height: 300,
+                width: 200,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.3),
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: CachedNetworkImageProvider(
+                      "$imageUrl${widget.movie.posterPath}",
+                    ),
                   ),
                 ),
               ),
             ),
-
-            const SizedBox(height: 12),
-            // Movie title
-            Text(
-              widget.movie.title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 4),
-            // Year
-            Text(
-              widget.movie.year,
-              style: const TextStyle(
-                color: Colors.white60,
-                fontSize: 12,
-              ),
-            ),
             
-            const SizedBox(height: 30),
-            // Unified rank display
-            Consumer<UserRatingState>(
-              builder: (context, ratingState, child) {
-                final unifiedRank = _calculateUnifiedRank(ratingState);
-                return Text(
-                  'Ranked #$unifiedRank',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+            const SizedBox(height: 42),
+            
+            Center(
+              child: Container(
+                width: 320,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.2),
+                    width: 1,
                   ),
-                  textAlign: TextAlign.center,
-                );
-              },
+                ),
+                child: Column(
+                  children: [
+                    // Rating with star icon
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                          size: 32,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          _numericalRating.toStringAsFixed(1),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    
+                    const SizedBox(height: 12),
+                    
+                    // Divider
+                    Container(
+                      height: 1,
+                      width: 60,
+                      color: Colors.white.withOpacity(0.3),
+                    ),
+                    
+                    const SizedBox(height: 12),
+                    
+                    // Rank
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '#$_unifiedRank',
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        const Text(
+                          'Overall',
+                          style: TextStyle(
+                            color: Colors.white54,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
             
-            const SizedBox(height: 30),
+            //const Spacer(),
+            
+            const SizedBox(height: 40),
             // Submit button
             _buildSubmitButton(),
           ],

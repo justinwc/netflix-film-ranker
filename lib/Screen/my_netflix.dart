@@ -35,28 +35,28 @@ class _MyNetflixState extends State<MyNetflix> {
           return Column(
             children: [
               const SizedBox(height: 10),
-              
-          // User profile section
-          Center(
-            child: Column(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    'assets/user-icon.jpg',
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const Text(
-                  'Justin',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+
+              // User profile section
+              Center(
+                child: Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        'assets/user-icon.jpg',
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const Text(
+                      'Justin',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 5),
                     Text(
                       '${ratingState.totalRatedMovies} movies rated',
@@ -147,10 +147,10 @@ class _MyNetflixState extends State<MyNetflix> {
             itemBuilder: (context, index) {
               final movieData = allMovies[index];
               final movie = movieData['movie'] as RatedMovie;
-              final category = movieData['category'] as String;
+              final numericalRating = movieData['numericalRating'] as double;
               final rank = index + 1; // Global ranking starts from 1
               
-              return _buildMovieCard(movie, rank, category);
+              return _buildMovieCard(movie, rank, numericalRating);
             },
           ),
         ],
@@ -159,7 +159,7 @@ class _MyNetflixState extends State<MyNetflix> {
   }
 
 
-  Widget _buildMovieCard(RatedMovie movie, int rank, String category) {
+  Widget _buildMovieCard(RatedMovie movie, int rank, double numericalRating) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       padding: const EdgeInsets.all(12),
@@ -184,7 +184,7 @@ class _MyNetflixState extends State<MyNetflix> {
             ),
           ),
           const SizedBox(width: 12),
-          
+
           // Movie poster
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
@@ -217,7 +217,7 @@ class _MyNetflixState extends State<MyNetflix> {
             ),
           ),
           const SizedBox(width: 12),
-          
+
           // Movie details
           Expanded(
             child: Column(
@@ -243,6 +243,24 @@ class _MyNetflixState extends State<MyNetflix> {
                 ),
                 const SizedBox(height: 6),
               ],
+            ),
+          ),
+
+          // Numerical rating displayed on the right side of the movie card
+          Container(
+            margin: const EdgeInsets.only(left: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.blueGrey[800],
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              numericalRating.toStringAsFixed(1),
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
           ),
         ],

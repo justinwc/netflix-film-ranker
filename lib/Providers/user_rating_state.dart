@@ -50,29 +50,35 @@ class UserRatingState extends ChangeNotifier {
   // Good movies first (highest priority), then Okay, then Bad (lowest priority)
   List<Map<String, dynamic>> get unifiedRankingList {
     List<Map<String, dynamic>> allMovies = [];
+    int relativePosition = 0;
     
-    // Add Good movies first (highest priority)
+    // Add Good movies
     for (var movie in _goodMovies) {
       allMovies.add({
         'movie': movie,
-        'category': 'Good',
+        'numericalRating': calculateNumericalRating('Good', relativePosition, true),
       });
+      relativePosition++;
     }
     
-    // Add Okay movies second
+    // Add Okay movies
     for (var movie in _okayMovies) {
+      relativePosition = 0;
       allMovies.add({
         'movie': movie,
-        'category': 'Okay',
+        'numericalRating': calculateNumericalRating('Okay', relativePosition, true),
       });
+      relativePosition++;
     }
     
-    // Add Bad movies last (lowest priority)
+    // Add Bad movies
     for (var movie in _badMovies) {
+      relativePosition = 0;
       allMovies.add({
         'movie': movie,
-        'category': 'Bad',
+        'numericalRating': calculateNumericalRating('Bad', relativePosition, true),
       });
+      relativePosition++;
     }
     
     return allMovies;
@@ -173,5 +179,60 @@ class UserRatingState extends ChangeNotifier {
     _okayMovies.clear();
     _badMovies.clear();
     notifyListeners();
+  }
+
+  // Calculate the unified rank for a movie at a given position in a category
+  // Returns 1-indexed rank in the unified ranking list
+  int calculateUnifiedRank(String category, int position) {
+    int baseRank = 0;
+    
+    // Calculate base rank based on category
+    switch (category.toLowerCase()) {
+      case 'good':
+        // Good movies start at rank 1
+        baseRank = 0;
+        break;
+      case 'okay':
+        // Okay movies come after all Good movies
+        baseRank = _goodMovies.length;
+        break;
+      case 'bad':
+        // Bad movies come after all Good and Okay movies
+        baseRank = _goodMovies.length + _okayMovies.length;
+        break;
+      default:
+        return 0;
+    }
+    
+    // Add the position within the category (1-indexed)
+    return baseRank + position + 1;
+  }
+
+  double calculateNumericalRating(String category, int position, bool isAdded) {
+    double numericalRating = 10.0;
+
+    int increment = 0;
+    if (!isAdded) increment = 1;
+
+    // Calculate rating based on
+    switch (category.toLowerCase()) {
+      case 'good':
+        double interval = (10.0 - 6.7) / (_goodMovies.length + increment);
+        numericalRating = numericalRating - (interval * position);
+        break;
+      case 'okay':
+        double interval = (6.7 - 3.3) / (_okayMovies.length + increment);
+        numericalRating = 6.7 - (interval * position);
+        break;
+      case 'bad':
+        double interval = 3.3 / (_badMovies.length + increment);
+        numericalRating = 3.3 - (interval * position);
+        break;
+      default:
+        return 0;
+    }
+    
+    // Add the position within the category (1-indexed)
+    return numericalRating;
   }
 }

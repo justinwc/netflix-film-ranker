@@ -50,26 +50,11 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    // String formatRuntime(int runtime) {
-    //   int hours = runtime ~/ 60; // Integer division
-    //   int minutes = runtime % 60;
-
-    //   return '${hours}h ${minutes}m';
-    // }
 
     return Scaffold(
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
         child:
-        // FutureBuilder(
-        //   future: movieDetail,
-        //   builder: (context, snapshot) {
-        //     if (snapshot.hasData) {
-        //       final movie = snapshot.data!;
-        //       String generesText = movie.genres
-        //           .map((genere) => genere.name)
-        //           .join(", ");
-        //       return
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -164,14 +149,6 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
                         ),
                       ),
                       SizedBox(width: 10),
-                      // Text(
-                      //   formatRuntime(movie.runtime),
-                      //   style: TextStyle(
-                      //     fontWeight: FontWeight.bold,
-                      //     fontSize: 16,
-                      //     color: Colors.white,
-                      //   ),
-                      // ),
                       Text(
                         widget.originalLanguage,
                         style: TextStyle(
@@ -322,53 +299,6 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
                 ),
               ],
             ),
-            // SizedBox(height: 20),
-            // FutureBuilder(
-            //   future: movieRecommendation,
-            //   builder: (context, snapshot) {
-            //     if (snapshot.hasData) {
-            //       final movie = snapshot.data;
-            //       return movie!.results.isEmpty
-            //           ? SizedBox()
-            //           : Column(
-            //             crossAxisAlignment: CrossAxisAlignment.start,
-            //             children: [
-            //               Text(
-            //                 "More Like This",
-            //                 style: TextStyle(
-            //                   color: Colors.white,
-            //                   fontWeight: FontWeight.bold,
-            //                   fontSize: 18,
-            //                 ),
-            //               ),
-            //               SizedBox(height: 20),
-            //               SizedBox(
-            //                 height: 200,
-            //                 child: ListView.builder(
-            //                   scrollDirection: Axis.horizontal,
-            //                   shrinkWrap: true,
-            //                   padding: EdgeInsets.zero,
-            //                   itemCount: movie.results.length,
-            //                   itemBuilder: (context, index) {
-            //                     return Padding(
-            //                       padding: const EdgeInsets.only(right: 5),
-            //                       child: CachedNetworkImage(
-            //                         imageUrl:
-            //                             "$imageUrl${movie.results[index].posterPath}",
-            //                         height: 200,
-            //                         width: 150,
-            //                         fit: BoxFit.cover,
-            //                       ),
-            //                     );
-            //                   },
-            //                 ),
-            //               ),
-            //             ],
-            //           );
-            //     }
-            //     return Text("Something Went Wrong");
-            //   },
-            // ),
           ],
         ),
       ),
