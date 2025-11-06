@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../Providers/user_rating_state.dart';
-import '../Services/beli_ranking_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:netflix_clone/Common/utils.dart';
+import 'comparison_screen.dart';
 
 class RatingPage extends StatefulWidget {
   final RatedMovie movie;
@@ -109,7 +108,6 @@ class _RatingPageState extends State<RatingPage> {
                         _buildRatingButton(
                           "Good",
                           Icons.thumb_up,
-                          Colors.green,
                           selectedRating == "Good",
                           () {
                             setState(() => selectedRating = "Good");
@@ -122,7 +120,6 @@ class _RatingPageState extends State<RatingPage> {
                         _buildRatingButton(
                           "Okay",
                           Icons.thumbs_up_down,
-                          Colors.orange,
                           selectedRating == "Okay",
                           () {
                             setState(() => selectedRating = "Okay");
@@ -135,7 +132,6 @@ class _RatingPageState extends State<RatingPage> {
                         _buildRatingButton(
                           "Bad",
                           Icons.thumb_down,
-                          Colors.red,
                           selectedRating == "Bad",
                           () {
                             setState(() => selectedRating = "Bad");
@@ -144,29 +140,6 @@ class _RatingPageState extends State<RatingPage> {
                         ),
                       ],
                     ),
-                    
-                    SizedBox(height: 40),
-                    
-                    // Submit rating button
-                    // if (selectedRating != null)
-                    //   ElevatedButton(
-                    //     style: ElevatedButton.styleFrom(
-                    //       backgroundColor: Colors.red,
-                    //       shape: RoundedRectangleBorder(
-                    //         borderRadius: BorderRadius.circular(20),
-                    //       ),
-                    //       padding: EdgeInsets.symmetric(horizontal: 50, vertical: 18),
-                    //     ),
-                    //     onPressed: _submitRating,
-                    //     child: Text(
-                    //       "Submit Rating",
-                    //       style: TextStyle(
-                    //         color: Colors.white,
-                    //         fontSize: 18,
-                    //         fontWeight: FontWeight.bold,
-                    //       ),
-                    //     ),
-                    //   ),
                   ],
                 ),
               ),
@@ -177,16 +150,16 @@ class _RatingPageState extends State<RatingPage> {
     );
   }
 
-  Widget _buildRatingButton(String label, IconData icon, Color color, bool isSelected, VoidCallback onTap) {
+  Widget _buildRatingButton(String label, IconData icon, bool isSelected, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 200,
         padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
         decoration: BoxDecoration(
-          color: isSelected ? color.withOpacity(0.2) : Colors.transparent,
+          color: Colors.transparent,
           border: Border.all(
-            color: isSelected ? color : Colors.white54,
+            color: Colors.white54,
             width: isSelected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(20),
@@ -196,14 +169,14 @@ class _RatingPageState extends State<RatingPage> {
           children: [
             Icon(
               icon,
-              color: isSelected ? color : Colors.white70,
+              color: Colors.white70,
               size: 24,
             ),
             SizedBox(width: 10),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? color : Colors.white70,
+                color: Colors.white70,
                 fontSize: 18,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
@@ -214,58 +187,20 @@ class _RatingPageState extends State<RatingPage> {
     );
   }
 
-  Future<void> _submitRating() async {
-    // Get the rating state provider
-    final ratingState = Provider.of<UserRatingState>(context, listen: false);
-    final rating = selectedRating!; // Capture before async
-
-    // Use Beli ranking system for all rating categories
-    try {
-      List<RatedMovie> existingMovies;
-
-      switch (rating.toLowerCase()) {
-        case 'good':
-          existingMovies = ratingState.goodMovies;
-          break;
-        case 'okay':
-          existingMovies = ratingState.okayMovies;
-          break;
-        case 'bad':
-          existingMovies = ratingState.badMovies;
-          break;
-        default:
-          existingMovies = [];
-      }
-
-      final position = await BeliRankingService.findMoviePosition(
-        context: context,
-        newMovie: widget.movie,
-        existingMovies: existingMovies,
-        category: rating,
-      );
-
-      BeliRankingService.insertMovieAtPosition(
-        ratingState: ratingState,
-        movie: widget.movie,
-        position: position,
-        category: rating,
-      );
-
-    } catch (e) {
-      // Fallback to regular rating if Beli system fails
-      ratingState.addRating(widget.movie, rating);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Rating saved: $rating"),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-
+  void _submitRating() {
+    final rating = selectedRating!;
+    
+    // Navigate to comparison screen with the rating
     if (mounted) {
-      Navigator.of(context).pop();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ComparisonScreen(
+            newMovie: widget.movie,
+            rating: rating,
+          ),
+        ),
+      );
     }
   }
 }

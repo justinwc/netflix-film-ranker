@@ -46,6 +46,38 @@ class UserRatingState extends ChangeNotifier {
   // Get total count of rated movies
   int get totalRatedMovies => _goodMovies.length + _okayMovies.length + _badMovies.length;
 
+  // Get unified ranking list with all movies ordered by category priority
+  // Good movies first (highest priority), then Okay, then Bad (lowest priority)
+  List<Map<String, dynamic>> get unifiedRankingList {
+    List<Map<String, dynamic>> allMovies = [];
+    
+    // Add Good movies first (highest priority)
+    for (var movie in _goodMovies) {
+      allMovies.add({
+        'movie': movie,
+        'category': 'Good',
+      });
+    }
+    
+    // Add Okay movies second
+    for (var movie in _okayMovies) {
+      allMovies.add({
+        'movie': movie,
+        'category': 'Okay',
+      });
+    }
+    
+    // Add Bad movies last (lowest priority)
+    for (var movie in _badMovies) {
+      allMovies.add({
+        'movie': movie,
+        'category': 'Bad',
+      });
+    }
+    
+    return allMovies;
+  }
+
   // Add a movie to the appropriate rating list
   void addRating(RatedMovie movie, String rating) {
     // First, remove the movie from any existing list (in case user re-rates)

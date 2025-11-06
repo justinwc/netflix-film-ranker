@@ -119,32 +119,7 @@ class _MyNetflixState extends State<MyNetflix> {
   }
 
   Widget _buildUnifiedRankingList(UserRatingState ratingState) {
-    // Create a single list with all movies, ordered by category priority
-    List<Map<String, dynamic>> allMovies = [];
-    
-    // Add Good movies first (highest priority)
-    for (var movie in ratingState.goodMovies) {
-      allMovies.add({
-        'movie': movie,
-        'category': 'Good',
-      });
-    }
-    
-    // Add Okay movies second
-    for (var movie in ratingState.okayMovies) {
-      allMovies.add({
-        'movie': movie,
-        'category': 'Okay',
-      });
-    }
-    
-    // Add Bad movies last (lowest priority)
-    for (var movie in ratingState.badMovies) {
-      allMovies.add({
-        'movie': movie,
-        'category': 'Bad',
-      });
-    }
+    final allMovies = ratingState.unifiedRankingList;
 
     return SingleChildScrollView(
       child: Column(
