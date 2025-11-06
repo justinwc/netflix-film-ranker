@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:netflix_clone/Common/utils.dart';
 import 'package:netflix_clone/Model/movie_details.dart';
 import 'package:netflix_clone/Model/movie_recommendation.dart';
@@ -268,32 +269,47 @@ class _MovieDetailedScreenState extends State<MovieDetailedScreen> {
                     ),
                   ],
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RatingPage(
-                          movie: RatedMovie(
-                            id: widget.movieId,
-                            title: widget.title,
-                            posterPath: widget.posterPath,
-                            releaseDate: widget.releaseDate,
-                            overview: widget.overview,
+                Consumer<UserRatingState>(
+                  builder: (context, ratingState, child) {
+                    final isRated = ratingState.isMovieRated(widget.movieId);
+                    
+                    return GestureDetector(
+                      onTap: () {
+                        if (isRated) {
+                          // Remove rating if already rated
+                          ratingState.removeRating(widget.movieId);
+                        }
+                        // Navigate to rating page if not rated
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RatingPage(
+                              movie: RatedMovie(
+                                id: widget.movieId,
+                                title: widget.title,
+                                posterPath: widget.posterPath,
+                                releaseDate: widget.releaseDate,
+                                overview: widget.overview,
+                              ),
+                            ),
                           ),
-                        ),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Icon(
+                            isRated ? Icons.check : Icons.thumb_up,
+                            size: 40,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            isRated ? "Re-Rate" : "Rate",
+                            style: TextStyle(color: Colors.white, height: 0.5),
+                          ),
+                        ],
                       ),
                     );
                   },
-                  child: Column(
-                    children: [
-                      Icon(Icons.thumb_up, size: 40, color: Colors.white),
-                      Text(
-                        "Rate",
-                        style: TextStyle(color: Colors.white, height: 0.5),
-                      ),
-                    ],
-                  ),
                 ),
                 Column(
                   children: [

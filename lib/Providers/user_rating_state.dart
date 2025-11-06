@@ -102,7 +102,7 @@ class UserRatingState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Remove a movie from all lists (public for Beli ranking service)
+  // Remove a movie from all lists
   void removeFromAllLists(int movieId) {
     _goodMovies.removeWhere((movie) => movie.id == movieId);
     _okayMovies.removeWhere((movie) => movie.id == movieId);

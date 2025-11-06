@@ -132,7 +132,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
               ),
             ),
             
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             // Unified rank display
             Consumer<UserRatingState>(
               builder: (context, ratingState, child) {
@@ -141,7 +141,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                   'Ranked #$unifiedRank',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
@@ -149,7 +149,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
               },
             ),
             
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
             // Submit button
             _buildSubmitButton(),
           ],

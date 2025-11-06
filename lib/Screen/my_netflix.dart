@@ -33,10 +33,10 @@ class _MyNetflixState extends State<MyNetflix> {
       body: Consumer<UserRatingState>(
         builder: (context, ratingState, child) {
           return Column(
-        children: [
+            children: [
               const SizedBox(height: 10),
               
-              // User profile section
+          // User profile section
           Center(
             child: Column(
               children: [
@@ -69,7 +69,7 @@ class _MyNetflixState extends State<MyNetflix> {
                 ),
               ),
               const SizedBox(height: 20),
-              
+
               // Rated movies list
               Expanded(
                 child: ratingState.totalRatedMovies == 0
