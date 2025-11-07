@@ -6,7 +6,7 @@
 </p>
 
 
-A mobile Netflix clone built with Flutter, featuring a Beli-inspired film rating and ranking system. Users can browse movies and shows through a Netflix-style interface, then rate and rank titles directly within the same app. Animations with Lottie, and film/show data are fetched from the TMDB API.
+A mobile Netflix clone built with Flutter, featuring a Beli-inspired film rating and ranking system. Users can rate and rank titles directly within the same app they watch movies from instead of having to use an external platform like letterboxd. Animations with Lottie, and film/show data are fetched from the TMDB API.
 
 
 
