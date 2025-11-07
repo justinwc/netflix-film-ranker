@@ -1,6 +1,8 @@
 
 # Netflix Film Ranker
 
+![App Demo](assets/demo-thumbnail.png)
+
 A mobile Netflix clone built with Flutter, featuring a Beli-inspired film rating and ranking system. Users can browse movies and shows through a Netflix-style interface, then rate and rank titles directly within the same app. Animations with Lottie, and film/show data are fetched from the TMDB API.
 
 
@@ -13,6 +15,9 @@ A mobile Netflix clone built with Flutter, featuring a Beli-inspired film rating
 ## Demo
 
 [▶️ Watch on YouTube](https://youtube.com/shorts/qWQxFlzOtSc?feature=share)
+
+<a href="https://youtube.com/shorts/qWQxFlzOtSc?feature=share" target="_blank">🎥 Watch the Demo</a>
+
 ## Getting Started
 
 Before running the app, make sure you have the following installed:
