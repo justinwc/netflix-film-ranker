@@ -2,7 +2,7 @@
 # Netflix Film Ranker
 
 <p align="center">
-  <img width="182" height="567" alt="Project Screenshot" src="https://github.com/user-attachments/assets/4100e612-91d0-449b-83b9-4dc2057b5de1" />
+  <img width="282" height="667" alt="Project Screenshot" src="https://github.com/user-attachments/assets/4100e612-91d0-449b-83b9-4dc2057b5de1" />
 </p>
 
 
