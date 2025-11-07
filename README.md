@@ -1,16 +1,32 @@
-# netflix_clone
 
-A new Flutter project.
+# Netflix Film Ranker
 
+A mobile Netflix clone built with Flutter, featuring a Beli-inspired film rating and ranking system. Users can browse movies and shows through a Netflix-style interface, then rate and rank titles directly within the same app. Animations with Lottie, and film/show data are fetched from the TMDB API.
+
+
+
+
+
+
+
+
+## Demo
+
+[▶️ Watch on YouTube](https://youtube.com/shorts/qWQxFlzOtSc?feature=share)
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Before running the app, make sure you have the following installed:
+- [Flutter SDK](https://docs.flutter.dev/get-started/install)
+- [Android Studio](https://developer.android.com/studio) or [Visual Studio Code](https://code.visualstudio.com/)
+- An emulator or physical device (iOS or Android)
 
-A few resources to get you started if this is your first Flutter project:
+You can verify your setup by running:
+```bash
+flutter doctor
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+After cloning the repository and navigating into the project folder, run the following commands:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+flutter pub get
+flutter run
